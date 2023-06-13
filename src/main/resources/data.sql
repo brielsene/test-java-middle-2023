@@ -1,0 +1,27 @@
+-- Cria a tabela PARENT
+CREATE TABLE PARENT (
+  Id INT PRIMARY KEY,
+  Name VARCHAR(255)
+);
+
+-- Insere os dados na tabela PARENT
+INSERT INTO PARENT (Id, Name) VALUES (1, 'John');
+INSERT INTO PARENT (Id, Name) VALUES (2, 'Paul');
+INSERT INTO PARENT (Id, Name) VALUES (3, 'Mary');
+INSERT INTO PARENT (Id, Name) VALUES (4, 'Lucy');
+INSERT INTO PARENT (Id, Name) VALUES (5, 'Mark');
+
+-- Cria a tabela CHILD
+CREATE TABLE CHILD (
+  Id INT PRIMARY KEY,
+  Name VARCHAR(255),
+  FATHER_ID INT,
+  MOTHER_ID INT
+);
+
+-- Insere os dados na tabela CHILD
+INSERT INTO CHILD (Id, Name, FATHER_ID, MOTHER_ID) VALUES (1, 'John', 1, 3);
+INSERT INTO CHILD (Id, Name, FATHER_ID, MOTHER_ID) VALUES (2, 'Paul', 1, 3);
+INSERT INTO CHILD (Id, Name, FATHER_ID, MOTHER_ID) VALUES (3, 'Lucy', 2, 4);
+INSERT INTO CHILD (Id, Name, FATHER_ID, MOTHER_ID) VALUES (4, 'Claire', 1, 4);
+INSERT INTO CHILD (Id, Name, FATHER_ID, MOTHER_ID) VALUES (5, 'Simon', NULL, 4);
