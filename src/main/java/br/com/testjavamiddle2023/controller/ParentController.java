@@ -3,7 +3,9 @@ package br.com.testjavamiddle2023.controller;
 
 import br.com.testjavamiddle2023.domain.child.ChildParentDTO;
 
+import br.com.testjavamiddle2023.service.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,47 +19,31 @@ public class ParentController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-
+    @Autowired
+    private ParentService parentService;
 
     @GetMapping("/fathers")
-    public List<String> getAllFatherNames() {
-        String sql = "SELECT Name FROM Parent";
-        return jdbcTemplate.queryForList(sql, String.class);
+    public ResponseEntity<List<String>> getAllFatherNames() {
+        return ResponseEntity.ok(parentService.getAllFatherNames()) ;
     }
 
     @GetMapping("/fathers/multiple-children")
-    public List<String> getFathersWithMultipleChildren() {
-        String sql = "SELECT p.Name " +
-                "FROM Parent p " +
-                "JOIN Child c ON c.FATHER_ID = p.Id " +
-                "GROUP BY p.Name " +
-                "HAVING COUNT(c.Id) > 1";
-        return jdbcTemplate.queryForList(sql, String.class);
+    public ResponseEntity<List<String>> getFathersWithMultipleChildren() {
+        return ResponseEntity.ok(parentService.getFathersWithMultipleChildren());
     }
 
     @GetMapping("/children/parents")
-    public List<ChildParentDTO> getChildrenWithParents() {
-        String sql = "SELECT c.Name, f.Name AS FatherName, m.Name AS MotherName " +
-                "FROM Child c " +
-                "LEFT JOIN Parent f ON c.FATHER_ID = f.Id " +
-                "LEFT JOIN Parent m ON c.MOTHER_ID = m.Id";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            String childName = rs.getString("Name");
-            String fatherName = rs.getString("FatherName");
-            String motherName = rs.getString("MotherName");
-            return new ChildParentDTO(childName, fatherName, motherName);
-        });
+    public ResponseEntity<List<ChildParentDTO>> getChildrenWithParents() {
+        return ResponseEntity.ok(parentService.getChildrenWithParents());
     }
 
     @GetMapping("/john/children-count")
-    public Long getJohnChildrenCount() {
-        String sql = "SELECT COUNT(*) FROM Child WHERE FATHER_ID = (SELECT Id FROM Parent WHERE Name = 'John')";
-        return jdbcTemplate.queryForObject(sql, Long.class);
+    public ResponseEntity<Long> getJohnChildrenCount() {
+        return ResponseEntity.ok(parentService.getJohnChildrenCount());
     }
 
     @GetMapping("/mary/children-count")
-    public Long getMaryChildrenCount() {
-        String sql = "SELECT COUNT(*) FROM Child WHERE MOTHER_ID = (SELECT Id FROM Parent WHERE Name = 'Mary')";
-        return jdbcTemplate.queryForObject(sql, Long.class);
+    public ResponseEntity<Long> getMaryChildrenCount() {
+        return ResponseEntity.ok(parentService.getMaryChildrenCount());
     }
 }
