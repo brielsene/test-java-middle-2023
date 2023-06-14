@@ -1,6 +1,9 @@
 package br.com.testjavamiddle2023.controller;
 
+import br.com.testjavamiddle2023.service.ReverseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,81 +17,31 @@ import java.util.List;
 @RestController
 @RequestMapping("/reverse")
 public class ReverseController {
+
+    @Autowired
+    private ReverseService reverseService;
+
     @PostMapping("/first")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<String> challenge1(@RequestBody String[] object) {
-
-        List<String> converted = new ArrayList<String>();
-
-        for(String objects : object) {
-            converted.add(objects);
-        }
-        Collections.reverse(converted);
-
-        return converted;
-
+    public ResponseEntity<List<String>> challenge1(@RequestBody String[] object) {
+        return ResponseEntity.ok(reverseService.challenge1(object));
     }
     @PostMapping("/second")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String[] challenge2(@RequestBody String[] object) {
-
-        List<String> converted = new ArrayList<String>();
-
-        for(String objects : object) {
-            converted.add(objects);
-        }
-        Collections.reverse(converted);
-
-
-        return object;
-
+    public ResponseEntity<String[]> challenge2(@RequestBody String[] object) {
+        return ResponseEntity.ok(reverseService.challenge2(object));
     }
 
     @PostMapping("/third")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<String> challenge3(@RequestBody List<String> object) {
-
-        List<String> convertida = new ArrayList<String>();
-
-        for(String objects : object) {
-            convertida.add(objects);
-        }
-        Collections.reverse(convertida);
-
-        return object;
+    public ResponseEntity<List<String>> challenge3(@RequestBody List<String> object) {
+        return ResponseEntity.ok(reverseService.challenge3(object));
 
     }
 
     @PostMapping("/upload")
-    public String[] uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-
-        BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
-
-        String[] fields = new String[0];
-        try (BufferedReader reader = new BufferedReader(fileReader)) {
-            fields = getFieldsFromCSV(reader);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return fields;
-
+    public ResponseEntity<String[]> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(reverseService.uploadFile(file));
     }
 
-    public static String[] getFieldsFromCSV(BufferedReader reader) throws IOException {
-        List<String> fieldValues = new ArrayList<>();
-
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] fields = line.split(",");
-            for (String field : fields) {
-                field = field.replaceAll("[^a-zA-Z0-9]", "");
-                fieldValues.add(field);
-            }
-
-        }
-        return fieldValues.toArray(new String[0]);
-}
 }
